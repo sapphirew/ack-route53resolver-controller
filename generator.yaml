@@ -71,6 +71,12 @@ resources:
         is_read_only: true
         custom_field:
           list_of: IpAddressResponse
+        # Compared as a subnet-keyed set in the delta_post_compare hook
+        # (customPostCompare), matching how GetIPAddressDifference computes the
+        # addresses to associate and disassociate; the generated
+        # order-sensitive comparison is skipped.
+        compare:
+          is_ignored: true
     renames:
       operations:
         GetResolverEndpoint:
@@ -83,6 +89,8 @@ resources:
           input_fields:
             ResolverEndpointId: Id
     hooks:
+      delta_post_compare:
+        code: customPostCompare(delta, a, b)
       sdk_create_post_build_request:
         template_path: hooks/resolver_endpoint/sdk_create_post_build_request.go.tpl
       sdk_create_post_set_output:

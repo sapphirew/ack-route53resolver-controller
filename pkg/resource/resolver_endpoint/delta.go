@@ -49,13 +49,6 @@ func newResourceDelta(
 			delta.Add("Spec.Direction", a.ko.Spec.Direction, b.ko.Spec.Direction)
 		}
 	}
-	if len(a.ko.Spec.IPAddresses) != len(b.ko.Spec.IPAddresses) {
-		delta.Add("Spec.IPAddresses", a.ko.Spec.IPAddresses, b.ko.Spec.IPAddresses)
-	} else if len(a.ko.Spec.IPAddresses) > 0 {
-		if !equality.Semantic.Equalities.DeepEqual(a.ko.Spec.IPAddresses, b.ko.Spec.IPAddresses) {
-			delta.Add("Spec.IPAddresses", a.ko.Spec.IPAddresses, b.ko.Spec.IPAddresses)
-		}
-	}
 	if ackcompare.HasNilDifference(a.ko.Spec.Name, b.ko.Spec.Name) {
 		delta.Add("Spec.Name", a.ko.Spec.Name, b.ko.Spec.Name)
 	} else if a.ko.Spec.Name != nil && b.ko.Spec.Name != nil {
@@ -86,5 +79,6 @@ func newResourceDelta(
 		delta.Add("Spec.Tags", a.ko.Spec.Tags, b.ko.Spec.Tags)
 	}
 
+	customPostCompare(delta, a, b)
 	return delta
 }
